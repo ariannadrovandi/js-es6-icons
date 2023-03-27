@@ -137,102 +137,106 @@ const icons = [
     }
 ];
 
-/* 
-<div class="col-12 col-md-4 col-lg-2">
-    <div class="card p-2 m-2 d-flex justify-content-center align-items-center ${color}" style="color: ${newcolor}">
-        <div class="${prefix}${family} ${prefix}${name}"></div>
-        <div class="">${name}</div>
-    </div>
-</div> 
-*/
+// ------------------------- MILESTONE 1 & 2 -----------------------
 
-function cards(cardContent){
-    const newcolor = colorRandom();
-    let{name, prefix, family, color} = cardContent;
-    color = newcolor;
-    const tplCards = 
+// <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+//     <div class="card">
+//         <div class="card-body d-flex justify-content-center align-items-center py-4 fs-3" style="color: ${value.color}"> 
+//             <i class="${value.prefix}${value.family} ${value.prefix}${value.name}"></i>
+//             <span>${value.name}</span>
+//         </div>
+//     </div>
+// </div>
+
+
+// funzione che disegna il template delle card e lo ritorna 
+function drawCard(icon){
+    
+    const template = 
     `
-    <div class="col-12 col-md-4 col-lg-2">
-        <div class="card p-2 m-2 d-flex justify-content-center align-items-center ${color}" style="color: ${newcolor}">
-            <div class="${prefix}${family} ${prefix}${name}"></div>
-            <div class="">${name}</div>
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card">
+            <div class="card-body d-flex justify-content-center align-items-center py-4 fs-3" style="color: ${icon.color}"> 
+                <i class="${icon.prefix}${icon.family} ${icon.prefix}${icon.name}"></i>
+                <span>${icon.name}</span>
+            </div>
         </div>
     </div>
     `;
-    console.log(tplCards);
-    return tplCards;
-};
+    return template;
+}
 
-function colorRandom(){
-    //variabile codice colore
-    const characters= '1234567890ABCDEF';
-    let codeHex = '#';
+function drawPage(icons){
+    // for (let i = 0; i < icons.length; i++){
+    //     console.log(icons[i]); //icons[i].name
+    // };
+    // for (let icon of icons){
+    //     console.log(icon); // icon.name
+    // };
+    const container = document.querySelector('.row');
+    let html = ''; //creo una variabile dove vado a metter tpl per metterlo a display
 
-    //massimo di caratteri 
-    const maxCharacters = 6;
-    let i = 0;
+    // ciclo forEach che mi crea nella pagina le card
+    icons.forEach((icon)=> { //(value, index, array) es (icon, i, icons) in questo caso
+        const tpl = drawCard(icon); //metto drawCaed dentro una variabile tpl per poi metterla a display
+        //console.log(drawCard(icon));
+        html += tpl;  //metto a display il drawCard
+    });
 
-    //genero un numero random
-    while (i < maxCharacters ){
-        let randomNum = getRndNumIncl(0, characters.length);
-        codeHex +=
-        `
-        ${characters.charAt([randomNum])}
-        `;
-        i++
-    };
-    return codeHex;
-};
+    //console.log(html);
 
-/*
-<option value="all" id="all">All</option>
-<option value="animals" id="animal">Animals</option>
-<option value="vegetables" id="vegetable">Vegetables</option>
-<option value="users" id="user">Users</option>
-*/
+    //dopo aver creato tutte le icone le stampo a display
+    container.innerHTML = html;
+}
 
-function createOption() {
-    //Creo array con i type: 
-    const types = [];
-    for (let i = 0; i < icons.length; i++) {
-        if (types.indexOf(icons[i].type) === -1){
-        types.push(icons[i].type);}
-    }
-    types.unshift('all');
-    // option
-    let optTypes= '';
-    for(let x = 0; x < types.length; x++){
-    const optTemplate = 
-    `
-    <option value="${types[x]}">${types[x].toUpperCase()}</option>
-    `;
-    optTypes += 
-    `
-    ${optTemplate}
-    `;
-    };
-    
-    select.innerHTML = optTypes;
-};
 
-function printCards(obj){
-    const row = document.querySelector('.row');
-    let cardElements = '';
-    for (let i = 0; i < obj.length; i++){
-       card = createCards(obj[i]);
-       cardElements += box;
-    }
-    row.innerHTML = cardElements;
-};
 
+
+// ------------------------- MILESTONE 3 -----------------------
+
+function filterIcons(){
+    // prendo l'array da filtrare
+    //icons
+    //prendo il value della select con this
+    console.log(this.value);
+
+    /*
+    let filterArray = icons.filter((icon)=> { //ora avrò un nuovo array 
+        if (icon === this.value){  //così avrò nel nuovo array solo le icon dell'array che hanno il type che soddisfa l'opzione scelta nel select
+            return true;
+        } else {
+            return false;
+        };
+    });
+    scritto in una riga è:
+    */
+
+    // creo un nuovo array nel quale andranno solo le icon che hanno il type che soddisfa la scelta dell'opzione del select 
+    let filteredArray = icons.filter((icon)=> this.value === 'alla' || icon.type === this.value); // scritto in una sola riga di codice
+    drawPage(filteredArray);
+
+}
+
+function populateOptions(select) {
+    // <option value="animal" id="animal">Animal</option>
+    let optionsValue = [];
+    icons.forEach((icon)=> {
+        if (!optionsValue.includes(icon.type)){
+            optionsValue.push(icon.type);
+            const newOption = document.createElement('option');
+            newOption.value = icon.type;
+            newOption.textContent = icon.type.charAt(0).toUpperCase() + icon.type.slice(1);
+            select.appendChild(newOption);
+        }
+    });
+    //console.log(optionsValue); 
+}
+
+//prendo select da html e gli metto l'evento change
 function init(){
-    createOption()
-    printCards(obj)
-    const select = document.getElementById('select');
-    select.addEventListener('change', getValue);
-};
-
+    const select = document.getElementById('type');
+    populateOptions(select);
+    select.addEventListener('change', filterIcons);
+    drawPage(icons); //gli dico che la prima volta mi deve far vedere la drawPage con l'array originale 
+}
 init()
-
-
-
