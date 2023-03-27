@@ -167,17 +167,11 @@ function drawCard(icon){
 }
 
 function drawPage(icons){
-    // for (let i = 0; i < icons.length; i++){
-    //     console.log(icons[i]); //icons[i].name
-    // };
-    // for (let icon of icons){
-    //     console.log(icon); // icon.name
-    // };
     const container = document.querySelector('.row');
     let html = ''; //creo una variabile dove vado a metter tpl per metterlo a display
 
     // ciclo forEach che mi crea nella pagina le card
-    icons.forEach((icon)=> { //(value, index, array) es (icon, i, icons) in questo caso
+    icons.forEach((icon)=> { 
         const tpl = drawCard(icon); //metto drawCaed dentro una variabile tpl per poi metterla a display
         //console.log(drawCard(icon));
         html += tpl;  //metto a display il drawCard
@@ -195,25 +189,11 @@ function drawPage(icons){
 // ------------------------- MILESTONE 3 -----------------------
 
 function filterIcons(){
-    // prendo l'array da filtrare
-    //icons
-    //prendo il value della select con this
+    //array da filtrare
     console.log(this.value);
 
-    /*
-    let filterArray = icons.filter((icon)=> { //ora avrò un nuovo array 
-        if (icon === this.value){  //così avrò nel nuovo array solo le icon dell'array che hanno il type che soddisfa l'opzione scelta nel select
-            return true;
-        } else {
-            return false;
-        };
-    });
-    scritto in una riga è:
-    */
-
     // creo un nuovo array nel quale andranno solo le icon che hanno il type che soddisfa la scelta dell'opzione del select 
-    let filteredArray = icons.filter((icon)=> this.value === 'alla' || icon.type === this.value); // scritto in una sola riga di codice
-    drawPage(filteredArray);
+    let filteredArray = icons.filter((icon)=> this.value === 'alla' || icon.type === this.value); 
 
 }
 
